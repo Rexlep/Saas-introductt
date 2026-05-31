@@ -1,8 +1,13 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
 tasks = []
+
+
+class Task(BaseModel):
+    title: str
 
 
 @app.get("/tasks")
@@ -11,8 +16,8 @@ def get_tasks():
 
 
 @app.post("/tasks")
-def create_task():
-    tasks.append("Learn FastAPI")
+def create_task(task: Task):
+    tasks.append(task.title)
 
     return {
         "message": "Task Added"
