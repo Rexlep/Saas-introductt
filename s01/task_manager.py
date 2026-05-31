@@ -22,3 +22,21 @@ def create_task(task: Task):
     return {
         "message": "Task Added"
     }
+
+
+@app.delete("/tasks/{task_index}")
+def delete_task(task_index: int):
+
+    tasks.pop(task_index)
+
+    return {
+        "message": "TaskDeleted"
+    }
+
+
+@app.put("/tasks/{task_index}")
+def update_task(task_index: int, task: Task):
+
+    tasks[task_index] = task.title
+
+    return {"message": "Task Updated"}
