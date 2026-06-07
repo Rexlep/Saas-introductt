@@ -74,3 +74,26 @@ def get_task(task_id: int):
         "id": task[0],
         "title": task[1]
     }
+
+
+@app.put("/tasks/{task_id}")
+def update_task(task_id: int, task: Task):
+    cursor.execute(
+        """
+        UPDATE tasks
+        SET title = %s 
+        WHERE id = %s
+        """, (task.title, task_id)
+    )
+
+    if cursor.rowcount == 0:
+        raise HTTPException(
+            status_code=404,
+            detail="Task Not founded"
+        )
+
+    conn.commit()
+
+    return {
+        "message": "Task Updated successfully"
+    }
