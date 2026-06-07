@@ -3,6 +3,7 @@ import psycopg2
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi import HTTPException
 
 class Task(BaseModel):
     title: str
@@ -39,7 +40,7 @@ def create_task(task: Task):
 @app.get("/tasks")
 def get_tasks():
     cursor.execute(
-        "SELECT * FROM tasks"
+        "SELECT * FROM tasks "
     )
 
     rows = cursor.fetchall()
@@ -54,3 +55,22 @@ def get_tasks():
         )
 
     return tasks
+
+
+@app.get("/tasks/{task_id}")
+def get_task(task_id: int):
+    cursor.execute(
+        "SELECT * FROM tasks WHERE id = (%s)", (task_id,))
+
+    task = cursor.fetchone()
+
+    if task is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not founded"
+        )
+
+    return {
+        "id": task[0],
+        "title": task[1]
+    }
