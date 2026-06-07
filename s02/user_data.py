@@ -34,3 +34,23 @@ def create_task(task: Task):
         "message": "Task saved",
         "data": task.title
     }
+
+
+@app.get("/tasks")
+def get_tasks():
+    cursor.execute(
+        "SELECT * FROM tasks"
+    )
+
+    rows = cursor.fetchall()
+    tasks = []
+
+    for row in rows:
+        tasks.append(
+            {
+                "id": row[0],
+                "title": row[1]
+            }
+        )
+
+    return tasks
