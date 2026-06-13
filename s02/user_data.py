@@ -97,3 +97,22 @@ def update_task(task_id: int, task: Task):
     return {
         "message": "Task Updated successfully"
     }
+
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int):
+    cursor.execute(
+        "DELETE FROM tasks WHERE id = %s", (task_id, )
+    )
+
+    if cursor.rowcount == 0:
+        raise HTTPException(
+            status_code=404,
+            detail="Task not founded"
+        )
+
+    conn.commit()
+
+    return {
+        "message": "Task deleted successfully"
+    }
